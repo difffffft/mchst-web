@@ -4,4 +4,4 @@
  *
  * @type {string[]}
  */
-export const ROUTE_WHITE_LIST = ['/404', '/login', '/register', '/forgot']
+export const ROUTE_WHITE_LIST = ['/404', '/login', '/register', '/forgot', '/']

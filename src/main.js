@@ -20,6 +20,7 @@ import router from './router'
 import pinia from "@/stores"
 
 import BaseAuth from '@/components/BaseAuth/index.vue'
+import BaseNewChatButton from '@/components/BaseNewChatButton/index.vue'
 
 import '@/permission'
 
@@ -27,6 +28,7 @@ import '@/permission'
 const app = createApp(App)
 
 app.component('BaseAuth', BaseAuth)
+app.component('BaseNewChatButton', BaseNewChatButton)
 
 app.use(pinia)
 app.use(router)
