@@ -21,6 +21,8 @@ import pinia from "@/stores"
 
 import BaseAuth from '@/components/BaseAuth/index.vue'
 import BaseNewChatButton from '@/components/BaseNewChatButton/index.vue'
+import BaseCollapseButton from '@/components/BaseCollapseButton/index.vue'
+import BaseSettingButton from '@/components/BaseSettingButton/index.vue'
 
 import '@/permission'
 
@@ -29,6 +31,8 @@ const app = createApp(App)
 
 app.component('BaseAuth', BaseAuth)
 app.component('BaseNewChatButton', BaseNewChatButton)
+app.component('BaseCollapseButton', BaseCollapseButton)
+app.component('BaseSettingButton', BaseSettingButton)
 
 app.use(pinia)
 app.use(router)

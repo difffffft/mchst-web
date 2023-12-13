@@ -3,7 +3,6 @@ import History from "./components/History/index.vue";
 import Chat from "./components/Chat/index.vue";
 </script>
 
-
 <template>
   <div class="home">
     <History></History>
@@ -11,11 +10,10 @@ import Chat from "./components/Chat/index.vue";
   </div>
 </template>
 
-
 <style lang="scss" scoped>
-.home{
-    display: flex;
-    height: 100%;
-    color:white;
+.home {
+  display: flex;
+  height: 100%;
+  color: white;
 }
 </style>

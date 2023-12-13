@@ -1,11 +1,11 @@
 <template>
   <div class="base-new-chat-button">
     <div class="left">
-      <img src='@/assets/images/assets-images-logo.png'>
-      <el-text truncated>New chat</el-text>
+      <el-avatar :size="30" style="margin-left: 0">雷</el-avatar>
+      <el-text truncated>设置</el-text>
     </div>
     <el-icon size="18">
-      <Edit/>
+      <Setting/>
     </el-icon>
   </div>
 </template>
