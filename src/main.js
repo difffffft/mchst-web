@@ -19,10 +19,14 @@ import App from './App.vue'
 import router from './router'
 import pinia from "@/stores"
 
-import '@/permission';
+import BaseAuth from '@/components/BaseAuth/index.vue'
+
+import '@/permission'
 
 
 const app = createApp(App)
+
+app.component('BaseAuth', BaseAuth)
 
 app.use(pinia)
 app.use(router)

@@ -1,3 +1,9 @@
+:root {
+  --el-color-primary: #000000;
+  --el-border-radius-base: 0px;
+  --el-margin-base: 8px;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -25,8 +31,24 @@ a,
 a:focus,
 a:hover {
   cursor: pointer;
-  text-decoration: underline;
+  text-decoration: none;
   color: #000;
+  position: relative;
+}
+
+a::after {
+  content: '';
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  position: absolute;
+  background-color: var(--el-color-primary);
+  transition: all 0.35s;
+}
+
+a:hover::after {
+  width: 100%;
 }
 
 li {

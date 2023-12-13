@@ -1,5 +1,10 @@
-:root {
-  --el-color-primary: #000000;
-  --el-border-radius-base: 0px;
-  --el-margin-base: 8px;
+/**
+用于界面的响应式变量，主要用来识别小屏幕
+Responsive variables for interfaces, mainly used to recognize small screens
+
+
+@media screen and (max-width: $m-mobile-width) {
+
 }
+ */
+$m-mobile-width: 768px;
