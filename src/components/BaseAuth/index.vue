@@ -2,7 +2,7 @@
 import {AUTH_MODE, AUTH_MODE_DESC} from "@/enums/index.js";
 import {ref} from "vue";
 
-const props = defineProps({
+defineProps({
   mode: {
     type: String,
     required: false,
@@ -28,9 +28,6 @@ const props = defineProps({
   }
 })
 const emits = defineEmits(['onRegister', 'onLogin', 'onForgot', 'onSubmit', 'onSendCode'])
-
-
-const count = ref(0)
 </script>
 
 <template>
@@ -307,7 +304,7 @@ const count = ref(0)
     height: auto;
   }
 
-  .login-container-desc{
+  .login-container-desc {
     height: 500px;
   }
 }

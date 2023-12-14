@@ -13,3 +13,8 @@
   border-radius: 999px;
   background-color: #333333;
 }
+
+html.dark {
+  /* 自定义深色背景颜色 */
+  --el-bg-color: #626aef;
+}

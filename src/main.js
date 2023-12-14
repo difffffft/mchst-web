@@ -6,6 +6,7 @@ import {createApp} from 'vue'
 import ElementPlus from 'element-plus'
 import ElementPlusIcons from '@/utils/elementPlusIcons'
 import 'element-plus/dist/index.css'
+import 'element-plus/theme-chalk/dark/css-vars.css'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 
 /**
@@ -23,6 +24,7 @@ import BaseAuth from '@/components/BaseAuth/index.vue'
 import BaseNewChatButton from '@/components/BaseNewChatButton/index.vue'
 import BaseCollapseButton from '@/components/BaseCollapseButton/index.vue'
 import BaseSettingButton from '@/components/BaseSettingButton/index.vue'
+import BaseEmpty from '@/components/BaseEmpty/index.vue'
 
 import '@/permission'
 
@@ -33,6 +35,7 @@ app.component('BaseAuth', BaseAuth)
 app.component('BaseNewChatButton', BaseNewChatButton)
 app.component('BaseCollapseButton', BaseCollapseButton)
 app.component('BaseSettingButton', BaseSettingButton)
+app.component('BaseEmpty', BaseEmpty)
 
 app.use(pinia)
 app.use(router)

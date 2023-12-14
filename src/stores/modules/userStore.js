@@ -13,7 +13,7 @@ export const useUserStore = defineStore('user', () => {
          * 用户唯一ID
          * USER_ID
          */
-        id: '',
+        id: '1',
         /**
          * 用户昵称
          * USER_NAME
@@ -28,7 +28,7 @@ export const useUserStore = defineStore('user', () => {
      *
      * @type {Ref<UnwrapRef<string>>}
      */
-    const authorization = ref("")
+    const authorization = ref("1")
 
 
     /**

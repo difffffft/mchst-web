@@ -1,139 +1,133 @@
 <script setup>
-import {useChatApi} from "@/api/sys/chat";
 import {useAppStore} from "@/stores/modules/appStore";
-import {useUserStore} from "@/stores/modules/userStore";
 import {OPENAI_ROLE_AVATAR, OPENAI_ROLES} from "@/enums";
-import {BASE_URL} from "@/constants";
 import {marked} from "marked";
+import {ref} from "vue";
+
+const props = defineProps({
+  chatSessionId: {
+    type: String,
+    required: true
+  },
+  chatModelList: {
+    type: Array,
+    required: true
+  },
+  chatSessionInfo: {
+    type: Object,
+    required: true
+  },
+  chatLoading: {
+    type: Boolean,
+    required: true
+  }
+})
+
+const emits = defineEmits(['onSend'])
 
 const appStore = useAppStore()
-import {ref} from "vue";
-import {nanoid} from "nanoid";
-
-const userStore = useUserStore()
-
-const msgList = ref([])
-
-const prompt = ref()
-const cachePrompt = ref()
-const disabled = ref(false)
-
-// msgList.value.push({
-//   id: nanoid(),
-//   role: OPENAI_ROLES.USER,
-//   content: "1+1等于几"
-// })
-// msgList.value.push({
-//   id: nanoid(),
-//   role: OPENAI_ROLES.ASSISTANT,
-//   content: "# 标题\n在CSS中，使用flex的反转可以通过flex-direction属性来实现。要反转flex容器中子元素的排列顺序，可以将flex-direction的值设置为\"row-reverse\"或\"column-reverse\"。 例如，如果你想要水平排列的子元素从右到左进行排列，可以这样设置： ``` .container { display: flex; flex-direction: row-reverse; } ``` 如果你想要垂直排列的子元素从下到上进行排列，可以这样设置： ``` .container { display: flex; flex-direction: column-reverse; } ``` 通过这种方式，你可以反转flex容器中子元素的排列顺序。同样，你也可以通过改变flex-direction属性的值来实现其他不同的布局效果。\n"
-// })
-//
-// msgList.value.push({
-//   id: nanoid(),
-//   role: OPENAI_ROLES.ASSISTANT,
-//   content: "可以使用Python的for循环来实现：\n\n```python\nfor i in range(1, 11):\n    print(i)\n```\n\n以上代码会输出数字1到10，每个数字占一行。"
-// })
 
 
+/**
+ * 用户当前输入的提示词
+ * The prompt word currently entered by the user
+ *
+ * @type {Ref<UnwrapRef<string>>}
+ */
+const prompt = ref('')
+
+/**
+ * MarkDown转Html
+ * @param value
+ * @returns {string | Promise<string>}
+ */
 const mdToHtml = (value) => {
   return marked.parse(value)
 }
 
-const onSend2 = async () => {
-  addUser()
-  try {
-    disabled.value = true
-    const {data} = await useChatApi({prompt: cachePrompt.value})
-    msgList.value.push({
-      id: nanoid(),
-      role: OPENAI_ROLES.ASSISTANT,
-      content: data
-    })
-  } catch (e) {
-
-  } finally {
-    disabled.value = false
-  }
-}
-
-const addUser = () => {
-  cachePrompt.value = prompt.value
-  msgList.value.push({
-    id: nanoid(),
-    role: OPENAI_ROLES.USER,
-    content: prompt.value
-  })
+/**
+ * 发送提示词
+ * @returns {Promise<void>}
+ */
+const onSend = async () => {
+  await emits('onSend', prompt.value)
   prompt.value = ''
 }
 
-const getStreamResponse = async () => {
-  addUser()
-  const url = BASE_URL + '/sys/chat/stream'
-  const context_list = JSON.parse(JSON.stringify(msgList.value.slice(-10))).filter((item, index) => {
-    delete item.id
-    return item
-  })
-  const resp = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': userStore.authorization
-    },
-    body: JSON.stringify({context_list})
-  })
-  msgList.value.push({
-    id: nanoid(),
-    role: OPENAI_ROLES.ASSISTANT,
-    content: ''
-  })
-  const reader = resp.body.getReader()
-  const decoder = new TextDecoder()
-  while (1) {
-    const {done, value} = await reader.read()
-    if (done) {
-      break
-    }
-    const str = decoder.decode(value)
-    msgList.value[msgList.value.length - 1].content += str
+/**
+ * 清空提示词
+ */
+const clearPrompt = () => {
+  prompt.value = ''
+}
+
+const onSendMessage = async (event) => {
+  if (!event.shiftKey) {
+    await onSend()
   }
 }
 
-const onSend = async () => {
-  await getStreamResponse()
+const isTextareaFocused = ref(false)
+const onTextareaFocus = () => {
+  isTextareaFocused.value = true;
 }
+const onTextareaBlur = () => {
+  isTextareaFocused.value = false;
+}
+
+defineExpose({
+  clearPrompt
+})
 </script>
 
 <template>
-  <div class="chat">
+  <div class="chat" v-loading="chatLoading">
     <BaseCollapseButton @on-click="appStore.historyCollapseToggle"></BaseCollapseButton>
-    <div style="height: 100%;display:flex;flex-direction: column;padding: 20px 100px;">
-      <div style="flex: 1;">
-        <ul class="content-container">
-          <li class="content" :class="{'user-content':v.role===OPENAI_ROLES.USER,
-        'assistant-content':v.role===OPENAI_ROLES.ASSISTANT}" v-for="v in msgList" :key="v.id">
-            <el-avatar :src="OPENAI_ROLE_AVATAR[v.role]"></el-avatar>
-            <div class="content-msg">
-              <template v-if="v.role===OPENAI_ROLES.USER">
-                <div>{{ v.content }}</div>
-              </template>
-              <template v-if="v.role===OPENAI_ROLES.ASSISTANT">
-                <div class="markdown" v-html="mdToHtml(v.content)"></div>
-              </template>
-            </div>
-          </li>
-        </ul>
+
+    <!--头部区域-->
+    <header v-if="!chatSessionInfo.id">
+      <el-select v-model="chatSessionInfo.model" placeholder="请选择模型" size="large">
+        <el-option
+            v-for="item in chatModelList"
+            :label="item.name"
+
+            :key="item.value"
+            :value="item.value"
+        />
+      </el-select>
+    </header>
+
+    <!--内容展示区，问题区，回答区-->
+    <main>
+      <ul class="content-container" v-if="chatSessionInfo.list.length > 0">
+        <li class="content" :class="{'user-content':v.role===OPENAI_ROLES.USER,
+        'assistant-content':v.role===OPENAI_ROLES.ASSISTANT}" v-for="v in chatSessionInfo.list" :key="v.id">
+          <el-avatar :src="OPENAI_ROLE_AVATAR[v.role]"></el-avatar>
+          <div class="content-msg">
+            <template v-if="v.role===OPENAI_ROLES.USER">
+              <pre>{{ v.content }}</pre>
+            </template>
+            <template v-if="v.role===OPENAI_ROLES.ASSISTANT">
+              <div class="markdown" v-html="mdToHtml(v.content)"></div>
+            </template>
+          </div>
+        </li>
+      </ul>
+      <BaseEmpty v-else></BaseEmpty>
+    </main>
+
+
+    <!--用户输入文本，点击发送-->
+    <footer>
+      <div class="footer-container" :class="{ 'focused': isTextareaFocused }">
+        <el-input
+            v-model="prompt"
+            type="textarea" :autosize="{minRows:1,maxRows:8}"
+            @keyup.enter="onSendMessage" @focus="onTextareaFocus" @blur="onTextareaBlur"></el-input>
+        <el-button :disabled="prompt===''" class="send-button" :class="{'send-button-disable':prompt===''}" type="info"
+                   icon="Top" @click="onSend"/>
       </div>
-      <div>
-        <div style="display: flex;height: 100%;align-items: flex-end">
-          <el-input v-model="prompt" type="textarea" :autosize="{minRows:4,maxRows:6}"
-                    style="margin-right: 20px;"></el-input>
-          <el-button :disabled="disabled" style="width: 200px;height: 100%" type="primary" size="large" @click="onSend">
-            发送
-          </el-button>
-        </div>
-      </div>
-    </div>
+    </footer>
   </div>
 </template>
 
@@ -143,45 +137,111 @@ const onSend = async () => {
   height: 100%;
   background-color: $m-chat-bg;
   position: relative;
-}
-
-::v-deep(.el-card__body) {
-  height: 100%;
-}
-
-.content-container {
-  height: 100%;
-  overflow-y: auto;
-}
-
-.content {
   display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
 
-  .content-msg {
-    max-width: 70%;
-    background-color: #f2f2f2;
-    border-radius: 8px;
-    margin-left: 8px;
-    margin-top: 20px;
-    padding: 12px 16px;
+
+main {
+  flex: 1;
+  overflow-y: auto;
+
+  .content-container {
+    margin: 0 auto;
+    padding: 20px 60px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .content {
+    display: flex;
+    margin-top: 8px;
+
+    .content-msg {
+      max-width: 80%;
+      border-radius: 8px;
+      margin-left: 8px;
+      margin-top: 20px;
+      padding: 12px 16px;
+    }
+  }
+
+  .user-content {
+    flex-direction: row-reverse;
+
+    .content-msg {
+      background-color: green;
+      color: white;
+      border-top-right-radius: 0;
+      margin-right: 8px;
+    }
+  }
+
+  .assistant-content {
+
+    .content-msg {
+      border-top-left-radius: 0;
+    }
   }
 }
 
-.user-content {
-  flex-direction: row-reverse;
 
-  .content-msg {
-    background-color: green;
-    color: white;
-    border-top-right-radius: 0;
-    margin-right: 8px;
+footer {
+  margin: 0 auto;
+
+  .footer-container {
+    display: flex;
+    align-items: flex-end;
+    border-radius: 12px;
+    border: 1px solid rgba(217, 217, 227, .2);
+    padding: 8px;
+
+    ::v-deep(textarea) {
+      box-shadow: none;
+      background-color: transparent;
+      resize: none;
+    }
+
+    .send-button {
+      color: black;
+      background-color: white;
+    }
+
+    .send-button:hover {
+      background-color: black;
+      color: white;
+    }
+
+    .send-button-disable {
+      background-color: #222222;
+      color: #999;
+    }
+
+    .send-button-disable:hover {
+      background-color: #222222;
+      color: #999;
+    }
+  }
+
+  .footer-container.focused {
+    border-color: rgba(217, 217, 227, .4);
   }
 }
 
-.assistant-content {
 
-  .content-msg {
-    border-top-left-radius: 0;
+.content-container, footer {
+  width: 60%;
+}
+
+@media screen and (max-width: $m-mobile-width) {
+  .content-container {
+    padding: 20px 0 !important;
+    width: 100%;
+  }
+
+  footer {
+    width: 100%;
   }
 }
 </style>

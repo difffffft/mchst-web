@@ -1,5 +1,9 @@
+<script setup>
+const emits = defineEmits(['onClick'])
+</script>
+
 <template>
-  <div class="base-new-chat-button">
+  <div class="base-new-chat-button" @click="emits('onClick')">
     <div class="left">
       <img src='@/assets/images/assets-images-logo.png'>
       <el-text truncated>New chat</el-text>

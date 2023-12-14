@@ -1,3 +1,7 @@
+import userAvatar from '@/assets/images/assets-images-avatar-user.jpg'
+import assistantAvatar from '@/assets/images/assets-images-avatar-assistant.jpg'
+import assistantAvatar2 from '@/assets/images/assets-images-logo.png'
+
 export const AUTH_MODE = {
     LOGIN: 'login',
     REGISTER: 'register',
@@ -16,6 +20,6 @@ export const OPENAI_ROLES = {
 }
 
 export const OPENAI_ROLE_AVATAR = {
-    user: 'https://gd-hbimg.huaban.com/dc4b46d78ad5d8f1657dc3b3dd28d7bec4a9b6c418bc9-TFXE1F_fw1200webp',
-    assistant: 'https://gd-hbimg.huaban.com/ec199fd0f342335d9f0a9f4feb120d1d7e36ef38411a8-Kc3qUg_fw1200webp'
+    user: userAvatar,
+    assistant: assistantAvatar2
 }

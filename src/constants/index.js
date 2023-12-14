@@ -10,4 +10,4 @@ export const BASE_URL = import.meta.env.VITE_APP_BASE_API
  *
  * @type {string[]}
  */
-export const ROUTE_WHITE_LIST = ['/404', '/login', '/register', '/forgot', '/']
+export const ROUTE_WHITE_LIST = ['/404', '/login', '/register', '/forgot', '/', '/c/aaa']

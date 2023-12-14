@@ -1,113 +1,35 @@
 <script setup>
 import {useAppStore} from "@/stores/modules/appStore.js";
-import {ref} from "vue";
-import {nanoid} from "nanoid";
 
-const appStore = useAppStore()
-
-const current = ref(nanoid())
-const onHistoryItemClick = (value) => {
-  current.value = value
-}
-const list = ref([
-  {
-    id: nanoid(),
-    name: "今天",
-    children: [
-      {
-        id: nanoid(),
-        name: "请问你的谁的谁,请问你的谁的谁,请问你的谁的谁",
-      }
-    ]
+const props = defineProps({
+  chatHistoryList: {
+    type: Array,
+    required: true
   },
-  {
-    id: nanoid(),
-    name: "昨天",
-    children: [
-      {
-        id: current.value,
-        name: "请问你的谁的谁",
-      },
-      {
-        id: nanoid(),
-        name: "请问你的谁的谁,请问你的谁的谁,请问你的谁的谁",
-      },
-      {
-        id: nanoid(),
-        name: "请问你的谁的谁,请问你的谁的谁,请问你的谁的谁",
-      },
-      {
-        id: nanoid(),
-        name: "请问你的谁的谁,请问你的谁的谁,请问你的谁的谁",
-      },
-      {
-        id: nanoid(),
-        name: "请问你的谁的谁,请问你的谁的谁,请问你的谁的谁",
-      },
-      {
-        id: nanoid(),
-        name: "请问你的谁的谁,请问你的谁的谁,请问你的谁的谁",
-      },
-      {
-        id: nanoid(),
-        name: "请问你的谁的谁,请问你的谁的谁,请问你的谁的谁",
-      },
-      {
-        id: nanoid(),
-        name: "请问你的谁的谁,请问你的谁的谁,请问你的谁的谁",
-      },
-    ]
+  chatSessionInfo: {
+    type: Object,
+    required: true
   },
-  {
-    id: nanoid(),
-    name: "7天以前",
-    children: [
-      {
-        id: nanoid(),
-        name: "请问你的谁的谁",
-      },
-      {
-        id: nanoid(),
-        name: "请问你的谁的谁,请问你的谁的谁,请问你的谁的谁",
-      },
-      {
-        id: nanoid(),
-        name: "请问你的谁的谁,请问你的谁的谁,请问你的谁的谁",
-      },
-      {
-        id: nanoid(),
-        name: "请问你的谁的谁,请问你的谁的谁,请问你的谁的谁",
-      },
-      {
-        id: nanoid(),
-        name: "请问你的谁的谁,请问你的谁的谁,请问你的谁的谁",
-      },
-      {
-        id: nanoid(),
-        name: "请问你的谁的谁,请问你的谁的谁,请问你的谁的谁",
-      },
-      {
-        id: nanoid(),
-        name: "请问你的谁的谁,请问你的谁的谁,请问你的谁的谁",
-      },
-      {
-        id: nanoid(),
-        name: "请问你的谁的谁,请问你的谁的谁,请问你的谁的谁",
-      },
-    ]
+  chatHistoryLoading: {
+    type: Boolean,
+    required: true
   }
-])
+})
+
+const emits = defineEmits(['onNewChat', 'onGoChat'])
+const appStore = useAppStore()
 </script>
 
 <template>
-  <div class="history" :class="appStore.historyCollapse ? 'history-collapse' :'history-no-collapse'">
-    <BaseNewChatButton></BaseNewChatButton>
+  <div class="history" :class="appStore.historyCollapse ? 'history-collapse' :'history-no-collapse'"
+       v-loading="chatHistoryLoading">
+    <BaseNewChatButton @onClick="emits('onNewChat')"></BaseNewChatButton>
     <ul class="scrollbar">
-      <li v-for="v in list" :key="v.id">
+      <li v-for="v in chatHistoryList" :key="v.id">
         <span class="time">{{ v.name }}</span>
         <div class="history-item" v-for="j in v.children" :key="j.id"
-             :class="current === j.id ? 'history-item-active':''"
-             @click="onHistoryItemClick(j.id)"
+             :class="{'history-item-active':chatSessionInfo.id === j.id}"
+             @click="emits('onGoChat',j.id)"
         >
           <el-text truncated>{{ j.name }}</el-text>
         </div>
