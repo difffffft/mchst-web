@@ -1,7 +1,7 @@
 import axios from 'axios'
 import qs from 'qs'
 import {ElMessage} from 'element-plus'
-import {BASE_URL} from "@/constants/index.js";
+import {AUTHORIZATION_NAME, BASE_URL} from "@/constants/index.js";
 import {useUserStore} from "@/stores/modules/userStore.js";
 
 const service = axios.create({
@@ -14,7 +14,7 @@ service.interceptors.request.use(
     (config) => {
         const userStore = useUserStore()
         if (userStore.authorization) {
-            config.headers.Authorization = userStore.authorization
+            config.headers[AUTHORIZATION_NAME] = userStore.authorization
         }
         config.headers['Accept-Language'] = 'zh-CN'
         /* 追加时间戳，防止GET请求缓存 */

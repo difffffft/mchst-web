@@ -1,5 +1,5 @@
 import service from "@/utils/request";
-import {BASE_URL} from "@/constants/index.js";
+import {AUTHORIZATION_NAME, BASE_URL} from "@/constants/index.js";
 import {useUserStore} from "@/stores/modules/userStore.js";
 
 
@@ -15,7 +15,7 @@ export const useSendProApi = async (data) => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': userStore.authorization
+            [AUTHORIZATION_NAME]: userStore.authorization
         },
         body: JSON.stringify({context_list: data})
     })

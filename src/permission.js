@@ -6,15 +6,15 @@ import {useUserStore} from "@/stores/modules/userStore";
 
 router.beforeEach(async (to, from, next) => {
     const {getDictList} = useAppStore()
-    const {userInfo, authorization, getUserInfo} = useUserStore()
+    const userStore = useUserStore()
 
-    if (authorization) {
+    if (userStore.authorization) {
         if (to.path === '/login') {
             next()
         } else {
-            if (!userInfo.id) {
+            if (!userStore.userInfo.id) {
                 try {
-                    await getUserInfo()
+                    await userStore.getUserInfo()
                     await getDictList()
                 } catch (error) {
                     /**

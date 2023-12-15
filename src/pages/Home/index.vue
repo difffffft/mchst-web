@@ -124,6 +124,9 @@ const onGoChat = (id) => {
   // todo:加载新的聊天记录
   chatLoading.value = true
   setTimeout(() => {
+    /**
+     * todo：判断当前的聊天记录和界面ID是否相同，防止用户频繁切换ID，导致的界面渲染问题
+     */
     chatSessionInfo.value.list.push({
       id: nanoid(),
       role: OPENAI_ROLES.USER,

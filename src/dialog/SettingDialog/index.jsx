@@ -2,7 +2,8 @@ import {createApp} from 'vue'
 import {defineComponent, ref} from 'vue'
 import {ElButton, ElDialog} from 'element-plus'
 import {CoffeeCup, Close, Delete} from "@element-plus/icons-vue";
-
+import "./index.scss"
+import {useUserStore} from "@/stores/modules/userStore.js";
 /**
  * 组件
  */
@@ -35,14 +36,20 @@ const BaseDialog = defineComponent({
      */
     setup(props) {
         const visible = ref(true)
+        const userStore = useUserStore()
         const handleClose = () => {
             visible.value = false
+            props.close()
+        }
+        const handleLogout = ()=>{
+            userStore.logout()
             props.close()
         }
 
         return {
             visible,
             handleClose,
+            handleLogout
         }
     },
     /**
@@ -51,6 +58,7 @@ const BaseDialog = defineComponent({
     render(props) {
         return (
             <ElDialog
+                align-center
                 draggable
                 width={'32%'}
                 close-on-click-modal={false}
@@ -58,17 +66,17 @@ const BaseDialog = defineComponent({
                 onClose={props.handleClose}
                 title={props.title}>
                 <ul>
-                    <li>
-                        <ElButton icon={CoffeeCup} style={{width: '100%', height: '50px'}} type="primary"
+                    <li className={'setting-item'}>
+                        <ElButton bg icon={CoffeeCup} style={{width: '100%', height: '50px'}} type="primary"
                                   text>升级会员</ElButton>
                     </li>
-                    <li>
+                    <li className={'setting-item'}>
                         <ElButton icon={Delete} style={{width: '100%', height: '50px'}} type="danger"
                                   text>清除所有聊天</ElButton>
                     </li>
-                    <li>
+                    <li className={'setting-item'}>
                         <ElButton icon={Close} style={{width: '100%', height: '50px'}} type="danger"
-                                  text>退出登录</ElButton>
+                                  text onClick={()=>props.handleLogout()}>退出登录</ElButton>
                     </li>
                 </ul>
             </ElDialog>

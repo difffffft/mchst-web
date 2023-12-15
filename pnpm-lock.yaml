@@ -14,6 +14,9 @@ dependencies:
   element-plus:
     specifier: ^2.4.3
     version: registry.npmmirror.com/element-plus@2.4.3(vue@3.3.10)
+  js-cookie:
+    specifier: ^3.0.5
+    version: registry.npmmirror.com/js-cookie@3.0.5
   marked:
     specifier: ^11.1.0
     version: registry.npmmirror.com/marked@11.1.0
@@ -4783,6 +4786,13 @@ packages:
     version: 1.21.0
     hasBin: true
     dev: true
+
+  registry.npmmirror.com/js-cookie@3.0.5:
+    resolution: {integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/js-cookie/-/js-cookie-3.0.5.tgz}
+    name: js-cookie
+    version: 3.0.5
+    engines: {node: '>=14'}
+    dev: false
 
   registry.npmmirror.com/js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/js-tokens/-/js-tokens-4.0.0.tgz}
