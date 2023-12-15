@@ -1,7 +1,15 @@
+<script setup>
+import {useUserStore} from "@/stores/modules/userStore.js";
+
+const emits = defineEmits(['onClick'])
+
+const userStore = useUserStore()
+</script>
+
 <template>
-  <div class="base-new-chat-button">
+  <div class="base-new-chat-button" @click="emits('onClick')">
     <div class="left">
-      <el-avatar :size="30" style="margin-left: 0">雷</el-avatar>
+      <el-avatar :size="30" style="margin-left: 0">{{ userStore.userInfo.username[0] }}</el-avatar>
       <el-text truncated>设置</el-text>
     </div>
     <el-icon size="18">
@@ -26,6 +34,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    .el-avatar{
+      background-color: #AB47BC;
+    }
 
     img {
       height: 30px;

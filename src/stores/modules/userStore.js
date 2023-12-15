@@ -18,7 +18,7 @@ export const useUserStore = defineStore('user', () => {
          * 用户昵称
          * USER_NAME
          */
-        username: ''
+        username: 'DIFFFFFFT'
     })
 
 

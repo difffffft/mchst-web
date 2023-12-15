@@ -16,15 +16,14 @@ const props = defineProps({
   }
 })
 
-const emits = defineEmits(['onNewChat', 'onGoChat'])
+const emits = defineEmits(['onNewChat', 'onGoChat', 'onSetting', 'onRename', 'onDelete'])
 const appStore = useAppStore()
 </script>
 
 <template>
-  <div class="history" :class="appStore.historyCollapse ? 'history-collapse' :'history-no-collapse'"
-       v-loading="chatHistoryLoading">
+  <div class="history" :class="appStore.historyCollapse ? 'history-collapse' :'history-no-collapse'">
     <BaseNewChatButton @onClick="emits('onNewChat')"></BaseNewChatButton>
-    <ul class="scrollbar">
+    <ul class="scrollbar" v-loading="chatHistoryLoading">
       <li v-for="v in chatHistoryList" :key="v.id">
         <span class="time">{{ v.name }}</span>
         <div class="history-item" v-for="j in v.children" :key="j.id"
@@ -32,10 +31,25 @@ const appStore = useAppStore()
              @click="emits('onGoChat',j.id)"
         >
           <el-text truncated>{{ j.name }}</el-text>
+          <el-popover
+              v-if="chatSessionInfo.id === j.id"
+              ref="popoverRef"
+              trigger="click"
+              placement="bottom-start"
+          >
+            <template #reference>
+              <el-icon class="more" @click.stop="">
+                <MoreFilled/>
+              </el-icon>
+            </template>
+            <el-button class="option-item" text icon="Edit" @click="emits('onRename', j.id)">重命名</el-button>
+            <el-button class="option-item" type="danger" text icon="Delete" @click="emits('onDelete', j.id)">删除
+            </el-button>
+          </el-popover>
         </div>
       </li>
     </ul>
-    <BaseSettingButton></BaseSettingButton>
+    <BaseSettingButton @onClick="emits('onSetting')"></BaseSettingButton>
   </div>
 </template>
 
@@ -77,19 +91,31 @@ const appStore = useAppStore()
 
 .history-item {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   height: 36px;
   border-radius: 8px;
   margin-top: 8px;
-  padding-left: 12px;
+  padding: 0 12px;
   cursor: pointer;
   transition: all 0.35s;
+
+  .more {
+    margin-left: 12px;
+  }
+
 
   .el-text {
     color: white;
     font-size: 14px;
   }
+}
+
+.option-item {
+  width: 100%;
+  margin-left: 0;
+  margin-top: 8px;
+  justify-content: flex-start;
 }
 
 .history-item:hover {

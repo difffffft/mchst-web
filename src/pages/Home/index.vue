@@ -8,6 +8,7 @@ import {historyList} from "@/mock/history.js";
 import {m_modelList} from "@/mock/modelList.js";
 import {nanoid} from "nanoid";
 import {OPENAI_ROLES} from "@/enums/index.js";
+import useSettingDialog from "@/dialog/SettingDialog/index.jsx";
 
 const route = useRoute()
 const router = useRouter()
@@ -33,6 +34,8 @@ const chatSessionId = computed(() => {
 
 /**
  * 聊天历史列表
+ * Chat History List
+ *
  * @type {Ref<UnwrapRef<[{children: [{name: string, id: string}], name: string, id: string},{children, name: string, id: string},{children, name: string, id: string}]>>}
  */
 const chatHistoryList = ref([])
@@ -40,12 +43,14 @@ const chatHistoryList = ref([])
 
 /**
  * 聊天历史加载
+ * Chat history loading
+ *
  * @type {Ref<UnwrapRef<boolean>>}
  */
 const chatHistoryLoading = ref(false)
 
 /**
- * 可用的模型列表
+ * 可用的模型列表，不同的账号具有不同的访问权限
  * List of available models
  *
  * @type {Ref<UnwrapRef<*[]>>}
@@ -54,6 +59,8 @@ const modelList = ref(m_modelList)
 
 /**
  * 当前会话的信息
+ * Information about the current session
+ *
  * @type {Ref<UnwrapRef<{}>>}
  */
 const chatSessionInfo = ref({
@@ -76,6 +83,8 @@ const chatLoading = ref(false)
 
 /**
  * 清除聊天
+ * Clear Chat
+ *
  */
 const clearChat = () => {
   chatSessionInfo.value.id = ''
@@ -85,6 +94,7 @@ const clearChat = () => {
 
 /**
  * 新建会话，需要清空聊天
+ * New session, need to clear chat
  */
 const onNewChat = () => {
   // 清空聊天信息
@@ -97,6 +107,8 @@ const onNewChat = () => {
 
 /**
  * 进入某个会话
+ * Entering a session
+ *
  */
 const onGoChat = (id) => {
   // 清空聊天信息
@@ -123,8 +135,40 @@ const onGoChat = (id) => {
 
 
 /**
+ * 设置
+ * set up
+ *
+ */
+const onSetting = () => {
+  const {show, close} = useSettingDialog()
+  show()
+}
+
+/**
+ * 重命名历史记录
+ * Rename History
+ *
+ * @param id
+ */
+const onRename = (id) => {
+  console.log(id)
+}
+
+/**
+ * 删除历史记录
+ * Delete History
+ *
+ * @param id
+ */
+const onDelete = (id) => {
+  console.log(id)
+}
+
+
+/**
  * 用户发送新的提示词的时候
  * When a user sends a new cue
+ *
  */
 const onSend = async (prompt) => {
   // 如果当前没有会话
@@ -178,6 +222,12 @@ const onSend = async (prompt) => {
   }
 }
 
+
+/**
+ * 首次进入页面时加载
+ * Loaded on first page entry
+ *
+ */
 onMounted(() => {
   chatHistoryLoading.value = true
   setTimeout(() => {
@@ -194,7 +244,11 @@ onMounted(() => {
         :chatHistoryList="chatHistoryList"
         :chatHistoryLoading="chatHistoryLoading"
         @onNewChat="onNewChat"
-        @onGoChat="onGoChat"></History>
+        @onGoChat="onGoChat"
+        @onSetting="onSetting"
+        @onRename="onRename"
+        @onDelete="onDelete"
+    ></History>
     <Chat
         ref="chatRef"
         :chatSessionId="chatSessionId"
@@ -211,7 +265,5 @@ onMounted(() => {
   display: flex;
   height: 100%;
   color: white;
-  --el-border-radius-base: 8px;
-  --el-margin-base: 8px;
 }
 </style>

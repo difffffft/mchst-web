@@ -6,7 +6,7 @@ const emits = defineEmits(['onClick'])
   <div class="base-new-chat-button" @click="emits('onClick')">
     <div class="left">
       <img src='@/assets/images/assets-images-logo.png'>
-      <el-text truncated>New chat</el-text>
+      <el-text truncated>新的提问</el-text>
     </div>
     <el-icon size="18">
       <Edit/>
