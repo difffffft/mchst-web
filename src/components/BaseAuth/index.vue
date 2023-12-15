@@ -1,6 +1,6 @@
 <script setup>
 import {AUTH_MODE, AUTH_MODE_DESC} from "@/enums/index.js";
-import {ref} from "vue";
+import {useDark, useToggle} from "@vueuse/core";
 
 defineProps({
   mode: {
@@ -28,6 +28,12 @@ defineProps({
   }
 })
 const emits = defineEmits(['onRegister', 'onLogin', 'onForgot', 'onSubmit', 'onSendCode'])
+
+const isDark = useDark()
+if (isDark.value) {
+  const toggleDark = useToggle(isDark)
+  toggleDark()
+}
 </script>
 
 <template>
@@ -155,6 +161,7 @@ const emits = defineEmits(['onRegister', 'onLogin', 'onForgot', 'onSubmit', 'onS
   display: flex;
   justify-content: center;
   align-items: center;
+  --el-color-primary: #333;
 
   .video-container {
     position: absolute;

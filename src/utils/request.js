@@ -44,11 +44,6 @@ service.interceptors.response.use(
         }
         // 错误提示
         ElMessage.error(res.msg)
-        // 没有权限，如：未登录、登录过期等，需要跳转到登录页
-        if (res.code === 401) {
-            // userStore.setToken('')
-            location.reload()
-        }
         return Promise.reject(new Error(res.msg || 'Error'))
     },
     error => {

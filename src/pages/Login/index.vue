@@ -4,6 +4,9 @@ import {useRouter} from "vue-router";
 import BaseAuth from "@/components/BaseAuth/index.vue";
 import {AUTH_MODE} from "@/enums/index.js";
 import {validateEmail} from "@/utils/validate.js";
+import Cookie from "js-cookie";
+import {AUTHORIZATION_NAME} from "@/constants/index.js";
+import {useUserStore} from "@/stores/modules/userStore.js";
 
 const router = useRouter()
 
@@ -30,8 +33,12 @@ const onRegister = () => {
 }
 const onSubmit = () => {
   submitStatus.value = true
+  const userStore = useUserStore()
   setTimeout(() => {
     submitStatus.value = false
+    Cookie.set(AUTHORIZATION_NAME, '1')
+    userStore.authorization = Cookie.get(AUTHORIZATION_NAME)
+    router.push('/')
   }, 1500)
 }
 </script>

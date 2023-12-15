@@ -1,14 +1,15 @@
 <script setup>
-import {useChatApi, useSendProApi} from "@/api/sys/chat";
+import {useSendProApi} from "@/api/sys/chat";
 import History from "./components/History/index.vue";
 import Chat from "./components/Chat/index.vue";
 import {useRoute, useRouter} from "vue-router";
-import {computed, onMounted, ref} from "vue";
+import {computed, onBeforeMount, onMounted, ref} from "vue";
 import {historyList} from "@/mock/history.js";
 import {m_modelList} from "@/mock/modelList.js";
 import {nanoid} from "nanoid";
 import {OPENAI_ROLES} from "@/enums/index.js";
 import useSettingDialog from "@/dialog/SettingDialog/index.jsx";
+import {useDark, useToggle} from "@vueuse/core";
 
 const route = useRoute()
 const router = useRouter()
@@ -225,6 +226,17 @@ const onSend = async (prompt) => {
   }
 }
 
+
+/**
+ * 切换成夜间模式
+ */
+onBeforeMount(() => {
+  const isDark = useDark()
+  if (!isDark.value) {
+    const toggleDark = useToggle(isDark)
+    toggleDark()
+  }
+})
 
 /**
  * 首次进入页面时加载
