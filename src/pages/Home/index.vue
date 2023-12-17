@@ -3,7 +3,7 @@ import {useSendProApi} from "@/api/sys/chat";
 import History from "./components/History/index.vue";
 import Chat from "./components/Chat/index.vue";
 import {useRoute, useRouter} from "vue-router";
-import {computed, onBeforeMount, onMounted, ref} from "vue";
+import {computed, nextTick, onBeforeMount, onMounted, ref} from "vue";
 import {historyList} from "@/mock/history.js";
 import {m_modelList} from "@/mock/modelList.js";
 import {nanoid} from "nanoid";
@@ -67,7 +67,7 @@ const modelList = ref(m_modelList)
 const chatSessionInfo = ref({
   id: '',
   //模型的value
-  model: 'chat-gpt-3.5',
+  model: m_modelList[0].value,
   // 聊天列表
   list: []
 })
@@ -200,6 +200,12 @@ const onSend = async (prompt) => {
     role: OPENAI_ROLES.USER,
     content: prompt
   })
+  // 滚动一下
+  await nextTick(() => {
+    chatRef.value.startScrollBottom()
+  })
+
+
   //2.将回答数据添加到本地
   chatSessionInfo.value.list.push({
     id: nanoid(),
@@ -213,7 +219,10 @@ const onSend = async (prompt) => {
       content: item.content
     }
   })
-  const resp = await useSendProApi(context_list)
+  const resp = await useSendProApi({
+    model: chatSessionInfo.value.model,
+    context_list
+  })
   const reader = resp.body.getReader()
   const decoder = new TextDecoder()
   while (1) {
@@ -223,6 +232,9 @@ const onSend = async (prompt) => {
     }
     const str = decoder.decode(value)
     chatSessionInfo.value.list[chatSessionInfo.value.list.length - 1].content += str
+    await nextTick(() => {
+      chatRef.value.startScrollBottom()
+    })
   }
 }
 
@@ -277,6 +289,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .home {
+  width: 100%;
   display: flex;
   height: 100%;
   color: white;

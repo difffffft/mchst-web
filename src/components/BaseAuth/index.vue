@@ -40,7 +40,8 @@ if (isDark.value) {
   <div class="login">
     <div class="video-container">
       <video muted autoplay loop playsinline>
-        <source src="@/assets/videos/assets-videos-login-bg.mp4" type="video/mp4">
+        <source src="https://upos-sz-mirrorali.bilivideo.com/upgcxcode/74/93/1369609374/1369609374-1-16.mp4?e=ig8euxZM2rNcNbRVhwdVhwdlhWdVhwdVhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&uipk=5&nbs=1&deadline=1702739875&gen=playurlv2&os=alibv&oi=17627301&trid=8abb7fc3549947e6a7e1521e03a34923h&mid=0&platform=html5&upsig=4c7c5030a58ceb75392dbe44636ddfdd&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&bvc=vod&nettype=0&f=h_0_0&bw=42083&logo=80000000" type="video/mp4">
+<!--        <source src="https://www.bilibili.com/video/BV1ec411m7h4?t=8.3" type="video/mp4">-->
         Your browser does not support the video tag.
       </video>
     </div>
@@ -168,6 +169,13 @@ if (isDark.value) {
     width: 100%;
     height: 100%;
     z-index: -2;
+    //width: 100%;
+    //height: 100%;
+    video{
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+    }
   }
 }
 

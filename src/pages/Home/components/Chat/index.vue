@@ -75,8 +75,20 @@ const onTextareaBlur = () => {
   isTextareaFocused.value = false;
 }
 
+
+const contentContainer = ref(null)
+/**
+ * 滚动到最下方
+ * Scroll to the bottom
+ *
+ */
+const startScrollBottom = () => {
+  contentContainer.value.scrollTop = contentContainer.value.scrollHeight
+}
+
 defineExpose({
-  clearPrompt
+  clearPrompt,
+  startScrollBottom
 })
 </script>
 
@@ -98,7 +110,7 @@ defineExpose({
     </header>
 
     <!--内容展示区，问题区，回答区-->
-    <main>
+    <main ref="contentContainer">
       <ul class="content-container" v-if="chatSessionInfo.list.length > 0">
         <li class="content" :class="{'user-content':v.role===OPENAI_ROLES.USER,
         'assistant-content':v.role===OPENAI_ROLES.ASSISTANT}" v-for="v in chatSessionInfo.list" :key="v.id">
@@ -155,23 +167,21 @@ main {
   }
 
   .content {
+    width: 100%;
     display: flex;
-    margin-top: 8px;
+    margin-bottom: 20px;
 
     .content-msg {
-      max-width: 80%;
+      flex: 1;
+
       border-radius: 8px;
       margin-left: 8px;
-      margin-top: 20px;
       padding: 12px 16px;
     }
   }
 
   .user-content {
-    flex-direction: row-reverse;
-
     .content-msg {
-      background-color: green;
       color: white;
       border-top-right-radius: 0;
       margin-right: 8px;
@@ -179,7 +189,6 @@ main {
   }
 
   .assistant-content {
-
     .content-msg {
       border-top-left-radius: 0;
     }

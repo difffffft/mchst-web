@@ -56,3 +56,18 @@ li {
 .el-textarea__inner {
   background-color: #202123;
 }
+
+
+.assistant-content{
+  pre {
+    width: 100%;
+    background-color: black;
+    padding: 12px;
+    border-radius: var(--el-border-radius-base);
+    margin: 8px 0;
+  }
+
+  code {
+    white-space: pre-wrap !important;
+  }
+}

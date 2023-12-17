@@ -17,6 +17,6 @@ export const useSendProApi = async (data) => {
             'Content-Type': 'application/json',
             [AUTHORIZATION_NAME]: userStore.authorization
         },
-        body: JSON.stringify({context_list: data})
+        body: JSON.stringify(data)
     })
 }
