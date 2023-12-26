@@ -7,6 +7,7 @@ import {validateEmail} from "@/utils/validate.js";
 import Cookie from "js-cookie";
 import {AUTHORIZATION_NAME} from "@/constants/index.js";
 import {useUserStore} from "@/stores/modules/userStore.js";
+import {useLoginApi} from "@/api/sys/auth.js";
 
 const router = useRouter()
 
@@ -31,15 +32,19 @@ const onForgot = () => {
 const onRegister = () => {
   router.push('/register')
 }
-const onSubmit = () => {
+const onSubmit = async () => {
   submitStatus.value = true
   const userStore = useUserStore()
-  setTimeout(() => {
-    submitStatus.value = false
-    Cookie.set(AUTHORIZATION_NAME, '1')
+  try {
+    const { data } = await useLoginApi(submitFormData.value)
+    Cookie.set(AUTHORIZATION_NAME, data)
     userStore.authorization = Cookie.get(AUTHORIZATION_NAME)
-    router.push('/')
-  }, 1500)
+    await router.push('/')
+  } catch (e) {
+
+  } finally {
+    submitStatus.value = false
+  }
 }
 </script>
 

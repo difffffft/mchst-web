@@ -3,6 +3,8 @@ import {useAppStore} from "@/stores/modules/appStore";
 import {OPENAI_ROLE_AVATAR, OPENAI_ROLES} from "@/enums";
 import {marked} from "marked";
 import {ref} from "vue";
+import '@wangeditor/editor/dist/css/style.css'
+import {Editor, Toolbar} from '@wangeditor/editor-for-vue'
 
 const props = defineProps({
   chatSessionId: {
@@ -112,22 +114,33 @@ defineExpose({
     <!--内容展示区，问题区，回答区-->
     <main ref="contentContainer">
       <ul class="content-container" v-if="chatSessionInfo.list.length > 0">
-        <li class="content" :class="{'user-content':v.role===OPENAI_ROLES.USER,
-        'assistant-content':v.role===OPENAI_ROLES.ASSISTANT}" v-for="v in chatSessionInfo.list" :key="v.id">
-          <el-avatar :src="OPENAI_ROLE_AVATAR[v.role]"></el-avatar>
-          <div class="content-msg">
-            <template v-if="v.role===OPENAI_ROLES.USER">
-              <pre>{{ v.content }}</pre>
-            </template>
-            <template v-if="v.role===OPENAI_ROLES.ASSISTANT">
-              <div class="markdown" v-html="mdToHtml(v.content)"></div>
-            </template>
-          </div>
-        </li>
+        <template v-for="v in chatSessionInfo.list" :key="v.id">
+          <template v-if="v.q">
+            <li class="content user-content" v-for="q in v.q.list" :key="q.id">
+              <el-avatar :src="OPENAI_ROLE_AVATAR[v.q.role]"></el-avatar>
+              <div class="content-msg">
+                <pre>{{ q.content }}</pre>
+              </div>
+            </li>
+          </template>
+          <template v-if="v.a">
+            <li class="content assistant-content" v-for="a in v.a.list" :key="a.id">
+              <el-avatar :src="OPENAI_ROLE_AVATAR[v.a.role]"></el-avatar>
+              <div class="content-msg" :key="a.content">
+                <Editor
+                    style="height: auto"
+                    v-model="a.content"
+                    :default-config="{ readOnly: true }"
+                    :mode="'default'"
+                />
+                <!--                <div class="markdown" v-html="mdToHtml(a.content)"></div>-->
+              </div>
+            </li>
+          </template>
+        </template>
       </ul>
       <BaseEmpty v-else></BaseEmpty>
     </main>
-
 
     <!--用户输入文本，点击发送-->
     <footer>
@@ -176,12 +189,16 @@ main {
 
       border-radius: 8px;
       margin-left: 8px;
-      padding: 12px 16px;
+      //padding: 12px 16px;
     }
   }
 
   .user-content {
+    //padding-top: 12px;
     .content-msg {
+      display: flex;
+      padding-left: 10px;
+      align-items: center;
       color: white;
       border-top-right-radius: 0;
       margin-right: 8px;
@@ -251,6 +268,17 @@ footer {
 
   footer {
     width: 100%;
+  }
+}
+
+::v-deep(.w-e-text-container) {
+  background-color: transparent;
+  color: #FFF;
+
+  code {
+    background-color: #222222 !important;
+    text-shadow: none !important;
+    border: none !important;
   }
 }
 </style>

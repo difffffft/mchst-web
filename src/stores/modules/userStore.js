@@ -2,25 +2,26 @@ import {defineStore} from 'pinia'
 import {ref} from "vue";
 import Cookie from 'js-cookie'
 import {AUTHORIZATION_NAME} from "@/constants/index.js";
+import {useUserInfoApi} from "@/api/sys/user.js";
 
 export const useUserStore = defineStore('user', () => {
     /**
      * 用户基本信息
      * Basic User Information
      *
-     * @type {Ref<UnwrapRef<{id: string, username: string}>>}
+     * @type {Ref<UnwrapRef<{id: string, nickName: string}>>}
      */
     const userInfo = ref({
         /**
          * 用户唯一ID
          * USER_ID
          */
-        id: '',
+        id: '1',
         /**
          * 用户昵称
          * USER_NAME
          */
-        username: 'DIFFFFFFT'
+        nickName: 'DIFFFFFFT'
     })
 
 
@@ -40,7 +41,10 @@ export const useUserStore = defineStore('user', () => {
      * @returns {Promise<void>}
      */
     const getUserInfo = async () => {
-        // throw new Error('')
+        const {data} = await useUserInfoApi()
+        const {id, nickName} = data
+        userInfo.value.id = id
+        userInfo.value.nickName = nickName
     }
 
 

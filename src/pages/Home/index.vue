@@ -10,6 +10,7 @@ import {nanoid} from "nanoid";
 import {OPENAI_ROLES} from "@/enums/index.js";
 import useSettingDialog from "@/dialog/SettingDialog/index.jsx";
 import {useDark, useToggle} from "@vueuse/core";
+import {marked} from "marked";
 
 const route = useRoute()
 const router = useRouter()
@@ -195,34 +196,43 @@ const onSend = async (prompt) => {
   }
 
   //1.将提问数据添加到本地
+  // 每一次提问都是一个数组
   chatSessionInfo.value.list.push({
     id: nanoid(),
-    role: OPENAI_ROLES.USER,
-    content: prompt
+
+    // 提问
+    q: {
+      role: OPENAI_ROLES.USER,
+      list: [
+        {
+          id: nanoid(),
+          content: prompt
+        }
+      ]
+    },
+
+    // 回答
+    a: {
+      role: OPENAI_ROLES.ASSISTANT,
+      list: [
+        {
+          id: nanoid(),
+          content: ''
+        }
+      ]
+    }
   })
   // 滚动一下
   await nextTick(() => {
     chatRef.value.startScrollBottom()
   })
 
-
-  //2.将回答数据添加到本地
-  chatSessionInfo.value.list.push({
-    id: nanoid(),
-    role: OPENAI_ROLES.ASSISTANT,
-    content: ''
-  })
-  //2.去发送请求
-  const context_list = JSON.parse(JSON.stringify(chatSessionInfo.value.list.slice(-10))).map((item, index) => {
-    return {
-      role: item.role,
-      content: item.content
-    }
-  })
   const resp = await useSendProApi({
     model: chatSessionInfo.value.model,
-    context_list
+    context_list: chatSessionInfo.value.list
   })
+
+  const huida = {value: ""}
   const reader = resp.body.getReader()
   const decoder = new TextDecoder()
   while (1) {
@@ -231,7 +241,15 @@ const onSend = async (prompt) => {
       break
     }
     const str = decoder.decode(value)
-    chatSessionInfo.value.list[chatSessionInfo.value.list.length - 1].content += str
+    // 拿到最后一条会对话
+    const lastA = chatSessionInfo.value.list[chatSessionInfo.value.list.length - 1].a.list
+    huida.value += str
+
+    //
+    lastA[lastA.length - 1].content = marked.parse(huida.value)
+    // lastA[lastA.length - 1].content += str
+
+    // 拿到最后一条对话中的
     await nextTick(() => {
       chatRef.value.startScrollBottom()
     })

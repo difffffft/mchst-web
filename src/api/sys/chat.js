@@ -9,7 +9,9 @@ export const useChatApi = (formData) => {
 
 
 export const useSendProApi = async (data) => {
-    const url = BASE_URL + '/sys/chat/stream'
+    // const url = 'http://43.143.249.23:8080/sys/chat/stream'
+    // const url = 'http://localhost:8080/chat/stream'
+    const url = 'http://193.200.134.12:8080/chat/stream'
     const userStore = useUserStore()
     return await fetch(url, {
         method: 'POST',

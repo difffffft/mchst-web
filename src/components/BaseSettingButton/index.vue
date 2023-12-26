@@ -9,7 +9,7 @@ const userStore = useUserStore()
 <template>
   <div class="base-new-chat-button" @click="emits('onClick')">
     <div class="left">
-      <el-avatar :size="30" style="margin-left: 0">{{ userStore.userInfo.username[0] }}</el-avatar>
+      <el-avatar :size="30" style="margin-left: 0">{{ userStore.userInfo.nickName[0] }}</el-avatar>
       <el-text truncated>设置</el-text>
     </div>
     <el-icon size="18">
